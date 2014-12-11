@@ -31,7 +31,7 @@
 (* ****** ****** *)
 //
 staload
-CALC = "./../calculator.sats"
+CALC = "calculator.sats"
 //
 (* ****** ****** *)
 
