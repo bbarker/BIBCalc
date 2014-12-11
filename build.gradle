@@ -1,8 +1,13 @@
+// How to test:
+// java -cp build/classes/main -Djava.library.path=. Calculator
+
 /*
 ** For patscc
 */
 //
 GCC = "gcc"
+//
+JAVA_HOME = System.getenv('JAVA_HOME')
 //
 PATSHOME = System.getenv('PATSHOME')
 PATSHOMERELOC = System.getenv('PATSHOMERELOC')
