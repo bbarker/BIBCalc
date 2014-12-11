@@ -21,6 +21,8 @@ JNIincl = "${JAVA_HOME}/include"
 /* ****** ****** */
 
 apply plugin: 'java'
+apply plugin: 'eclipse' // Provides tasks for creating an Eclipse project
+apply plugin: 'idea' // '' for creating an IntelliJ project
 
 /* ****** ****** */
 

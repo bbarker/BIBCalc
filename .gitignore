@@ -10,4 +10,16 @@
 build/*
 .gradle/*
 
+// Eclipse files
+.settings/
+.classpath
+.metadata
+.project
+
+// IntelliJ files
+.idea
+*.iml
+*.ipr
+*.iws
+
 ###### end of [.gitignore] ######
