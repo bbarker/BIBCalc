@@ -11,7 +11,7 @@ PATSCC = "${PATSHOME}/bin/patscc"
 PATSOPT = "${PATSHOME}/bin/patsopt"
 //
 INCLUDE = "-I${PATSHOME} -I${PATSHOME}/ccomp/runtime"
-JNIincl = "/usr/lib/jvm/java-7-openjdk-amd64/include"
+JNIincl = "${JAVA_HOME}/include"
 //
 /* ****** ****** */
 

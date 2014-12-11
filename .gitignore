@@ -8,5 +8,6 @@
 *_?ats.c
 *.exe
 build/*
+.gradle/*
 
 ###### end of [.gitignore] ######
