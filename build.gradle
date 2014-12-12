@@ -84,4 +84,16 @@ def myrun()
 
 /* ****** ****** */
 
+clean{
+  FileTree tree = fileTree(dir: '.')
+  tree.include('*_dats.c')
+  tree.include('*.o')
+  tree.each {File file ->
+    delete file
+  }
+
+}
+
+/* ****** ****** */
+
 /* end of [build.gradle] */
