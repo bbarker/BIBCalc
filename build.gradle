@@ -21,8 +21,10 @@ JNIincl = "${JAVA_HOME}/include"
 /* ****** ****** */
 
 apply plugin: 'java'
+
 apply plugin: 'eclipse' // Provides tasks for creating an Eclipse project
 apply plugin: 'idea' // '' for creating an IntelliJ project
+// Note: should run e.g. 'gradle idea' or 'gradle eclipse' before importing
 
 /* ****** ****** */
 
@@ -36,7 +38,8 @@ Calculator_controller_dats_o \
   mycmdln = 
   "${PATSCC} -D_GNU_SOURCE -DATS_MEMALLOC_LIBC -fPIC " +
   "${INCLUDE} -IIATS ${PATSHOMERELOC}/contrib " +
-  "-I${JNIincl} -I${JNIincl}/linux -c Calculator_controller.dats"
+  "-I${JNIincl} -I${JNIincl}/linux -c Calculator_controller.dats " +
+  "-L${PATSLIB}"
 } // end of [Calculator_controller_dats_o]
 
 /* ****** ****** */
@@ -72,12 +75,26 @@ extends DefaultTask
 //
 def mycmdln
 //
+def OSName
+//
+def PATSHOME = System.getenv('PATSHOME')
+def PATSLIB
+//
 @TaskAction
 def myrun()
 {
   project.exec
-  { 
+  {
+    OSName = System.getProperty("os.name")
+    //
+    if (OSName.startsWith("Windows")) {
+      // FOr now need to use Cygwin
+      PATSLIB = "C:\\cygwin64\\bin;${PATSHOME}\\bin"
+    }
+    environment.Path = environment.Path + File.pathSeparator + PATSLIB
+    environment.each{k, v -> println "${k}: ${v}"} // For testing only
     commandLine = mycmdln.split().toList()
+
   }
 }
 //
