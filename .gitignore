@@ -9,6 +9,7 @@
 *.exe
 build/*
 .gradle/*
+*.so
 
 // Eclipse files
 .settings/
