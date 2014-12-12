@@ -31,11 +31,11 @@ Calculator_dats_o \
 (
   type: MyExternTask
 ) {
-  inputs.file file("Calculator.dats")
+  inputs.file file("Calculator_controller.dats")
   outputs.file file("Calculator_dats.o")
   mycmdln = 
   "${PATSCC} -D_GNU_SOURCE -DATS_MEMALLOC_LIBC -fPIC " +
-  "${INCLUDE} -IIATS ${PATSHOMERELOC}/contrib -I${JNIincl} -c Calculator.dats"
+  "${INCLUDE} -IIATS ${PATSHOMERELOC}/contrib -I${JNIincl} -c Calculator_controller.dats"
 } // end of [Calculator_dats_o]
 
 /* ****** ****** */
