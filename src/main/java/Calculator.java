@@ -20,10 +20,8 @@ import java.util.* ;
 
 class Calculator
 {
-    public
-    static
-    native
-    double eval(String inp) throws IllegalArgumentException;
+    public static native double eval(String inp)
+			throws IllegalArgumentException;
     static
     {
 	// HX: for loading libCalculator_dats.so only
@@ -36,15 +34,17 @@ class Calculator
 	    String inp ;
 	    System.out.print (">> ") ;
 	    try {
-		inp = scanner.nextLine() ;
-	    } catch (NoSuchElementException e) {
-		inp = null ;
+			inp = scanner.nextLine() ;
+	    }
+		catch (NoSuchElementException e) {
+			inp = null ;
 	    }
 	    if (inp==null) break ;
 	    try {
-		double ans = eval(inp) ;
-		System.out.println ("eval(" + inp + ") = " + ans) ;
-	    } catch (IllegalArgumentException e) {
+			double ans = eval(inp) ;
+			System.out.println ("eval(" + inp + ") = " + ans) ;
+	    }
+		catch (IllegalArgumentException e) {
 		// HX-2013-08: Ignoring any and all parsing errors
 	    }
 	}
