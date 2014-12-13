@@ -40,6 +40,8 @@ Calculator_controller_dats_o \
   "${INCLUDE} -IIATS ${PATSHOMERELOC}/contrib " +
   "-I${JNIincl} -I${JNIincl}/linux -c Calculator_controller.dats " +
   "-L${PATSLIB}"
+  //Could do this for JNI interface located elsewhere
+  //-DATS JNI_targetloc=${PATSHOMERELOC}/contrib/JNI
 } // end of [Calculator_controller_dats_o]
 
 /* ****** ****** */
@@ -76,6 +78,7 @@ extends DefaultTask
 def mycmdln
 //
 def OSName
+def SHELL = ''
 //
 def PATSHOME = System.getenv('PATSHOME')
 def PATSLIB
@@ -90,7 +93,10 @@ def myrun()
     if (OSName.startsWith("Windows")) {
       // FOr now need to use Cygwin
       PATSLIB = "C:\\cygwin64\\bin;${PATSHOME}\\bin"
+      SHELL = "C:\\cygwin64\\bin\\bash"
+      mycmdln = "${SHELL} -c '${mycmdln}'"
     }
+
     environment.Path = environment.Path + File.pathSeparator + PATSLIB
     environment.each{k, v -> println "${k}: ${v}"} // For testing only
     commandLine = mycmdln.split().toList()
