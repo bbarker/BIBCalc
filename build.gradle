@@ -92,7 +92,7 @@ def myrun()
       mycmdln = "${SHELL} -l -c '${mycmdln}'"
     }
 
-    environment.each{k, v -> println "${k}: ${v}"} // For testing only
+    //environment.each{k, v -> println "${k}: ${v}"} // For testing only
     commandLine = mycmdln.split().toList()
 
   }
@@ -106,10 +106,20 @@ clean{
   FileTree tree = fileTree(dir: '.')
   tree.include('*_dats.c')
   tree.include('*.o')
+  tree.include('*.so')
   tree.each {File file ->
     delete file
   }
 
+}
+
+task cleanall {
+  // these seem to report UP-TO-DATE, even though
+  // files are not removed.
+  dependsOn clean
+  dependsOn cleanIdea
+  dependsOn cleanIdeaWorkspace
+  dependsOn cleanEclipse
 }
 
 /* ****** ****** */
