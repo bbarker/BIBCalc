@@ -7,6 +7,8 @@
 //
 GCC = "gcc"
 //
+OSName = System.getProperty("os.name")
+//
 JAVA_HOME = System.getenv('JAVA_HOME')
 //
 PATSHOME = System.getenv('PATSHOME')
@@ -14,10 +16,17 @@ PATSHOMERELOC = System.getenv('PATSHOMERELOC')
 //
 PATSCC = "${PATSHOME}/bin/patscc"
 PATSOPT = "${PATSHOME}/bin/patsopt"
+PATSCCOMP = "${GCC} -D_XOPEN_SOURCE"
 //
 INCLUDE = "-I${PATSHOME} -I${PATSHOME}/ccomp/runtime"
-JNIincl = "${JAVA_HOME}/include"
+JNIincl = "-I${JAVA_HOME}/include"
+if (OSName.startsWith("Windows")) {  //yes, even if win64
+  JNIincl += " -I${JAVA_HOME}/include/win32 -D__int64=int64_t"
+} else if (OSName.startsWith("Linux")) {
+  JNIincl += " -I${JAVA_HOME}/include/linux"
+}
 //
+
 /* ****** ****** */
 
 apply plugin: 'java'
@@ -36,9 +45,9 @@ Calculator_controller_dats_o \
   inputs.file file("Calculator_controller.dats")
   outputs.file file("Calculator_controller_dats.o")
   mycmdln = 
-  "${PATSCC} -D_GNU_SOURCE -DATS_MEMALLOC_LIBC -fPIC " +
+  "${PATSCC} -verbose -atsccomp ${PATSCCOMP} -D_GNU_SOURCE -DATS_MEMALLOC_LIBC -fPIC " +
   "${INCLUDE} -IIATS ${PATSHOMERELOC}/contrib " +
-  "-I${JNIincl} -I${JNIincl}/linux -c Calculator_controller.dats "
+  "${JNIincl} -c Calculator_controller.dats "
   //Could do this for JNI interface located elsewhere
   //-DATS JNI_targetloc=${PATSHOMERELOC}/contrib/JNI
 } // end of [Calculator_controller_dats_o]
@@ -52,7 +61,10 @@ libCalculator_dats_so \
 ) {
   inputs.file file("Calculator_controller_dats.o")
   outputs.file file("libCalculator_dats.so")
-  mycmdln = "${GCC} -shared -o libCalculator_dats.so -Wl,-soname,libCalculator_dats.so Calculator_controller_dats.o -ldl"
+  mycmdln = "${GCC} -D_XOPEN_SOURCE -shared -o libCalculator_dats.so " +
+          "-Wl,-soname,libCalculator_dats.so Calculator_controller_dats.o -ldl "
+//          "-L${PATSHOME}/ccomp/atslib/lib " +
+//          "-L${PATSHOME}/ccomp/atslib/lib64 -latslib"
 } // end of [libCalculator_dats_so]
 
 /* ****** ****** */
@@ -87,12 +99,13 @@ def myrun()
     OSName = System.getProperty("os.name")
     //
     if (OSName.startsWith("Windows")) {
-      // FOr now need to use Cygwin
+      // For now need to use Cygwin
+      // Probably should use `cygpath` in the future for lower chance of breaking.
       SHELL = "C:\\cygwin64\\bin\\bash"
-      mycmdln = "${SHELL} -l -c '${mycmdln}'"
+      mycmdln = "${SHELL} -l -c 'cd \"${project.projectDir}\"; ${mycmdln}'"
     }
 
-    //environment.each{k, v -> println "${k}: ${v}"} // For testing only
+    environment.each{k, v -> println "${k}: ${v}"} // For testing only
     commandLine = mycmdln.split().toList()
 
   }
