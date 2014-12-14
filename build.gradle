@@ -1,6 +1,6 @@
 // How to test:
 // java -cp build/classes/main -Djava.library.path=. Calculator
-
+import java.io.File
 /*
 ** For patscc
 */
@@ -45,7 +45,7 @@ Calculator_controller_dats_o \
   inputs.file file("Calculator_controller.dats")
   outputs.file file("Calculator_controller_dats.o")
   mycmdln = 
-  "${PATSCC} -verbose -atsccomp ${PATSCCOMP} -D_GNU_SOURCE -DATS_MEMALLOC_LIBC -fPIC " +
+  "${PATSCC} -atsccomp ${PATSCCOMP} -D_GNU_SOURCE -DATS_MEMALLOC_LIBC -fPIC " +
   "${INCLUDE} -IIATS ${PATSHOMERELOC}/contrib " +
   "${JNIincl} -c Calculator_controller.dats "
   //Could do this for JNI interface located elsewhere
@@ -89,25 +89,31 @@ extends DefaultTask
 def mycmdln
 //
 def OSName
+def CYGHOME = System.getenv('CYGHOME')
 def SHELL = ''
 //
 @TaskAction
 def myrun()
 {
+  OSName = System.getProperty("os.name")
+  //
+  if (OSName.startsWith("Windows")) {
+    if (CYGHOME != null) {
+      if (!File(CYGHOME).isDirectory()) {
+        CYGHOME = "C:\\cygwin64"
+      }
+    } else {
+      CYGHOME = "C:\\cygwin64"
+    }
+    // For now need to use Cygwin
+    // Probably should use `cygpath` in the future for lower chance of breaking.
+    SHELL = "${CYGHOME}\\bin\\bash"
+    mycmdln = "${SHELL} -l -c 'cd \"${project.projectDir}\"; ${mycmdln}'"
+
+  }
   project.exec
   {
-    OSName = System.getProperty("os.name")
-    //
-    if (OSName.startsWith("Windows")) {
-      // For now need to use Cygwin
-      // Probably should use `cygpath` in the future for lower chance of breaking.
-      SHELL = "C:\\cygwin64\\bin\\bash"
-      mycmdln = "${SHELL} -l -c 'cd \"${project.projectDir}\"; ${mycmdln}'"
-    }
-
-    environment.each{k, v -> println "${k}: ${v}"} // For testing only
     commandLine = mycmdln.split().toList()
-
   }
 }
 //
